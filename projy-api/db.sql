@@ -24,41 +24,41 @@ CREATE TABLE IF NOT EXISTS `chats` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(50) NOT NULL DEFAULT 'Chat',
   `is_private` int(1) NOT NULL,
-  `key` int(10) unsigned NOT NULL,
+  `owner_id` int(10) unsigned DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`),
-  KEY `key` (`key`),
-  CONSTRAINT `FK1_key_chats` FOREIGN KEY (`key`) REFERENCES `permission_keys` (`key`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  KEY `owner_id` (`owner_id`),
+  CONSTRAINT `FK1_chat_user_id` FOREIGN KEY (`owner_id`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+
+-- Exportação de dados foi desmarcado.
+
+-- Copiando estrutura para tabela projy.chat_membership
+CREATE TABLE IF NOT EXISTS `chat_membership` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int(10) unsigned DEFAULT 0,
+  `chat_id` int(10) unsigned NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id` (`id`),
+  KEY `user_id` (`user_id`),
+  KEY `chat_id` (`chat_id`),
+  CONSTRAINT `FK1_user_id_membership` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci COMMENT='Stores all chats and its users';
 
 -- Exportação de dados foi desmarcado.
 
 -- Copiando estrutura para tabela projy.message
 CREATE TABLE IF NOT EXISTS `message` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `sender_id` int(10) unsigned NOT NULL DEFAULT 0,
+  `sender_id` int(10) unsigned DEFAULT 0,
   `chat_id` int(10) unsigned DEFAULT 0,
   `text` text NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`),
   KEY `sender` (`sender_id`) USING BTREE,
   KEY `FK2_chat_id_message` (`chat_id`) USING BTREE,
-  CONSTRAINT `FK1_user_id_message` FOREIGN KEY (`sender_id`) REFERENCES `users` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `FK2_chat_id_message` FOREIGN KEY (`chat_id`) REFERENCES `chats` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
-
--- Exportação de dados foi desmarcado.
-
--- Copiando estrutura para tabela projy.permission_keys
-CREATE TABLE IF NOT EXISTS `permission_keys` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `user_id` int(10) unsigned DEFAULT 0,
-  `key` int(10) unsigned NOT NULL DEFAULT 0,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `permid` (`id`),
-  KEY `key` (`key`),
-  KEY `user_id` (`user_id`),
-  CONSTRAINT `FK1_user_id_keys` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `FK1_user_id_message` FOREIGN KEY (`sender_id`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE NO ACTION,
+  CONSTRAINT `FK2_chat_id_message` FOREIGN KEY (`chat_id`) REFERENCES `chats` (`id`) ON DELETE SET NULL ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
 
 -- Exportação de dados foi desmarcado.
@@ -66,14 +66,14 @@ CREATE TABLE IF NOT EXISTS `permission_keys` (
 -- Copiando estrutura para tabela projy.users
 CREATE TABLE IF NOT EXISTS `users` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `username` varchar(50) NOT NULL,
+  `username` varchar(50) DEFAULT NULL,
   `password` varchar(128) NOT NULL,
-  `is_admin` int(1) NOT NULL DEFAULT 0,
+  `is_admin` int(1) NOT NULL DEFAULT 0 COMMENT 'Boolean',
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`),
   UNIQUE KEY `id` (`id`),
   KEY `is_admin` (`is_admin`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
 
 -- Exportação de dados foi desmarcado.
 
