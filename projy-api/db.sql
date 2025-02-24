@@ -23,7 +23,7 @@ USE `projy`;
 CREATE TABLE IF NOT EXISTS `chats` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(50) NOT NULL DEFAULT 'Chat',
-  `is_private` int(11) NOT NULL,
+  `is_private` int(1) NOT NULL,
   `key` int(10) unsigned NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`),
@@ -67,9 +67,12 @@ CREATE TABLE IF NOT EXISTS `permission_keys` (
 CREATE TABLE IF NOT EXISTS `users` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `username` varchar(50) NOT NULL,
+  `password` varchar(128) NOT NULL,
+  `is_admin` int(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`),
-  UNIQUE KEY `id` (`id`)
+  UNIQUE KEY `id` (`id`),
+  KEY `is_admin` (`is_admin`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
 
 -- Exportação de dados foi desmarcado.
